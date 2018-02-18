@@ -1,6 +1,6 @@
 <template lang="pug">
   #app
-    h1 Waracle Cakes
+    h1 Waracle Cakes.
     
     div#editform Load a cake here to edit or input your data to create a new one.
       br
