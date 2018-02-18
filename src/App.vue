@@ -1,23 +1,36 @@
 <template lang="pug">
   #app
-    h1 {{header}}
+    h1 {{city.name}}, {{city.country}}
     div.row 
-      p.row-item {{content}}
-      p.row-item {{content}}
-      p.row-item {{content}}
-
+      p.row-item(v-for="data in weather") {{data.main.temp_min}}&#8451; - {{data.main.temp_max}}&#8451;
+        br 
+        span at {{data.dt_txt}}
 </template>
 
 <script>
+  import axios from 'axios';
 export default {
   name: 'app',
   data () {
     return {
       header: "Some Title",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
+      weather:"",
+      city: "",
+      test: [{name: "test1"},{name: "test2"}]
       
     }
-  }
+  },
+  methods:{
+    
+  },
+  created(){
+  axios.get('http://api.openweathermap.org/data/2.5/forecast?q=Dublin,ie&appid=4ef048fafa75365bcbf06efe005cf0ff&units=metric')
+    .then((res)=>{
+    this.weather = res.data.list;
+    this.city = res.data.city;
+  })
+    .catch()
+}
 }
 </script>
 
@@ -75,13 +88,22 @@ body
     .row-item
       width: 100%
       margin: 8px
+      padding: 16px
+      border: 1px solid gray
+      border-radius: 4px
+      box-shadow: 0px 12px 12px -12px gray
+      font-size: 32px
+      background: #eef
       @include tablet
         width: 34%
         margin: 32px
       @include desktop
         width: 24%
         margin: 12px
-      
+      span
+        font-size: 24px
+        font-family: 'Oswald', sans-serif
+        color: #ace
     
     
 
