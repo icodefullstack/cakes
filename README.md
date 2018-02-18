@@ -1,6 +1,6 @@
-# vwsp
+# Weather App
 
-> vue webpack sass pug
+> vue webpack sass pug Weather Application
 
 ## Build Setup
 
