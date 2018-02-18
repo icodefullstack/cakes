@@ -1,11 +1,30 @@
 <template lang="pug">
   #app
-    h1 {{city.name}}, {{city.country}}
+    h1 Waracle Cakes
+    
+    div#editform Load a cake here to edit or input your data to create a new one.
+      br
+      input(v-model="cakedata.id" class="myinput")
+      input(v-model="cakedata.name" class="myinput")
+      input(v-model="cakedata.comment" class="myinput")
+      input(v-model="cakedata.imageUrl" class="myinput" )
+      input(v-model="cakedata.yumFactor" class="myinput")
+
+      p
+        button(@click="updateCake(cakedata.id)") Update
+        button(@click="createCake()") Create
+    
     div.row 
-      p.row-item(v-for="data in weather") {{data.main.temp_min}}&#8451; - {{data.main.temp_max}}&#8451;
-        br 
-        span at {{data.dt_txt}}
+      div.row-item(v-for="cake in cakes") 
+        h3 {{cake.name}}
+        p {{cake.comment}}
+        img(:src="cake.imageUrl") 
+        p
+          button(@click="getCake(cake.id)") Load for Edit
+          button(@click="deleteCake(cake.id)") delete
+       
 </template>
+
 
 <script>
   import axios from 'axios';
@@ -13,21 +32,58 @@ export default {
   name: 'app',
   data () {
     return {
-      header: "Some Title",
-      weather:"",
-      city: "",
-      test: [{name: "test1"},{name: "test2"}]
-      
+      cakes:"",
+      cakedata:{
+        id:"",
+        name:"",
+        comment:"",
+        imageUrl:"",
+        yumFactor:0
+      }
     }
   },
   methods:{
+    getCake(id){
+    axios.get('http://ec2-52-209-201-89.eu-west-1.compute.amazonaws.com:5000/api/cakes/'+id)
+    .then((res)=>{
+      
+    this.cakedata = res.data;
+  })
+    .catch()
+    },
+    updateCake(id){
+      console.log(this.cakedata)
+      axios.put('http://ec2-52-209-201-89.eu-west-1.compute.amazonaws.com:5000/api/cakes/'+id, this.cakedata)
+    .then((res)=>{
+      
+    console.log(res)
+  })
+    .catch()
+    },
+    deleteCake(id){
+      console.log(this.cakedata)
+      axios.delete('http://ec2-52-209-201-89.eu-west-1.compute.amazonaws.com:5000/api/cakes/'+id)
+    .then((res)=>{
+      
+    console.log(res)
+  })
+    .catch()
+    },
+    createCake(){
+      console.log(this.cakedata)
+      axios.post('http://ec2-52-209-201-89.eu-west-1.compute.amazonaws.com:5000/api/cakes/')
+    .then((res)=>{
+      
+    console.log(res)
+  })
+    .catch()
+    }
     
   },
   created(){
-  axios.get('http://api.openweathermap.org/data/2.5/forecast?q=Dublin,ie&appid=4ef048fafa75365bcbf06efe005cf0ff&units=metric')
+  axios.get('http://ec2-52-209-201-89.eu-west-1.compute.amazonaws.com:5000/api/cakes')
     .then((res)=>{
-    this.weather = res.data.list;
-    this.city = res.data.city;
+    this.cakes = res.data;
   })
     .catch()
 }
@@ -85,6 +141,9 @@ body
     flex-direction: row
     flex-wrap: wrap
     justify-content: space-around
+    
+
+
     .row-item
       width: 100%
       margin: 8px
@@ -92,7 +151,7 @@ body
       border: 1px solid gray
       border-radius: 4px
       box-shadow: 0px 12px 12px -12px gray
-      font-size: 32px
+      font-size: 16px
       background: #eef
       @include tablet
         width: 34%
@@ -101,11 +160,25 @@ body
         width: 24%
         margin: 12px
       span
-        font-size: 24px
+        font-size: 12px
         font-family: 'Oswald', sans-serif
         color: #ace
-    
-    
+      img
+        width: 100%
+        height: auto
+  #editform
+    border: 1px solid gray
+    border-radius: 8px
+    padding: 32px
+    .myinput
+      display: block
+      padding: 8px
+      margin: 4px -8px
+      border-radius: 4px
+      border: 1px solid #5b637b
+      width: 100%
+      
+      
 
     
 </style>
